@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A layout example that shows off a blog page with a list of posts.">
+    <title>Darknight Blog</title>
+    <link rel="stylesheet" href="http://labfile.oss.aliyuncs.com/courses/487/pure-min.css">
+<link rel="stylesheet" href="http://labfile.oss.aliyuncs.com/courses/487/grids-responsive-min.css">
+    <link rel="stylesheet" href="http://labfile.oss.aliyuncs.com/courses/487/blog.css">
+    {% block add_head %}
+    {% endblock %}
+    <script src="/static/common.js"></script>
+</head>
+<body style="background-color: #fff;">
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+        <div class="header">
+            <h1 class="brand-title"><a href="{% url 'home' %}">Darknight Blog</a></h1>
+            {% block login_data %}
+                {% if login_data %}
+                    <h3 class="brand-tagline"><a href="/author/{{ login_data.login_name }}">{{ login_data.login_name }}</a> <small><a href="/logout">登出</a></small></h3>
+                {% else %}
+                    <span class="brand-tagline" id="login"><a href="/login">登录</a></span>
+                    <span class="brand-tagline" id="login"><a href="/signin">注册</a></span>
+                {% endif %}
+            {% endblock %}
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="button-success pure-button" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="button-success pure-button" href="{% url 'archives' %}">浏 览</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="button-success pure-button" href="/write">写 作</a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="button-error pure-button" href="http://www.126.com">邮 箱</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="button-success pure-button" href="/">Pages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="pure-button" href="https://github.com/DarknightWL">Github</a>
+                    </li>
+                    <li><p></p></li>
+                    <li>
+                        <form class="pure-form" action="/search/" method="get">
+                            <input class="pure-input-3-3" type="text" name="s" placeholder="搜索"/>
+                            <button class="pure-button" type="submit">Search</button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="content pure-u-1 pure-u-md-3-4">
+    <div>
+        {% block content %}
+        {% endblock %}
+        <div class="footer">
+            <div class="pure-menu pure-menu-horizontal pure-menu-open">
+                <ul>
+                    <li><a href="{% url 'about_me' %}">About Me</a></li>
+                    <li><a href="http://twitter.com/yuilibrary/">Twitter</a></li>
+                    <li><a href="http://github.com/yahoo/pure/">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

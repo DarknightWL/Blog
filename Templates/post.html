@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load custom_markdown %}
+{% block add_head %}
+    <script type="application/javascript" src="/static/js/jquery-1.8.2.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="application/javascript" src="/static/common.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="posts">
+    <section class="post">
+        <header class="post-header">
+            <h2 class="post-title">{{ post.title }}</h2>
+            <p class="post-meta">
+                Time: <a class="post-author" href="{% url 'search_time' time=post.date_time %}">{{ post.date_time }}</a>
+                <a class="post-category post-category-js" href="{% url 'search_tag' tag=post.category %}">{{ post.category }}</a>
+            </p>
+        </header>
+        <div class="post-description">
+            <div class="form-group">
+                <label class="control-label" for="article"></label>
+                <textarea name="article" class="form-control" rows="19" id="article" readonly></textarea>
+            </div>
+        </div>
+    </section>
+    <section class="post">
+        <label><button type="button" class="btn btn-danger" onclick="DoDelete()">删除</button></label>
+        <span>&nbsp;&nbsp;</span>
+        <label><button type="button" class="btn btn-primary" onclick="UpdateArt()">修改</button></label>
+    </section>
+    </div>
+<script type="application/javascript">
+    var csrftoken = $.cookie('csrftoken');
+    function csrfSafeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings){
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    function DoDelete(){
+        $.ajax({
+            url: "/delete/",
+            type: "POST",
+            data: {"art_id": {{ post.id }}},
+            success: function(res){
+                document.write(res)
+            },
+            error: function(res){
+                console.log('failed');
+                console.log(res)
+            }
+        });
+    }
+    function UpdateArt(){
+        $.ajax({
+            url: '/update/',
+            type: 'GET',
+            data: {"art_id": {{ post.id }}},
+            success: function(res){
+                console.log(res);
+                document.write(res);
+                }
+        })
+    }
+    (function AddArt(){
+            var art_content = `{{ post.content }}`;
+            var content = document.getElementById("article");
+            content.value = art_content;
+        }
+    )();
+</script>
+{% endblock %}
